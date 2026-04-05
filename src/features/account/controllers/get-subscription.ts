@@ -1,5 +1,5 @@
-import { createSupabaseServerClient } from '@/libs/supabase/supabase-server-client';
 import { Subscription } from '@/features/pricing/types';
+import { createSupabaseServerClient } from '@/libs/supabase/supabase-server-client';
 
 export async function getSubscription(): Promise<Subscription | null> {
   const supabase = await createSupabaseServerClient();
