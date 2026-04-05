@@ -1,0 +1,18 @@
+import { createSupabaseServerClient } from '@/libs/supabase/supabase-server-client';
+import { Subscription } from '@/features/pricing/types';
+
+export async function getSubscription(): Promise<Subscription | null> {
+  const supabase = await createSupabaseServerClient();
+
+  const { data, error } = await supabase
+    .from('subscriptions')
+    .select('*, prices(*, products(*))')
+    .in('status', ['trialing', 'active'])
+    .maybeSingle();
+
+  if (error) {
+    console.error(error);
+  }
+
+  return data as unknown as Subscription | null;
+}

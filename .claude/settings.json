@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "stop": [
+      {
+        "command": "bash .claude/hooks/stop-check.sh",
+        "description": "Verify tests, types, and lint pass before completing"
+      }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(*)"
+    ]
+  }
+}
