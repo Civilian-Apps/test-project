@@ -6,4 +6,4 @@
 
 | Environment | URL | Provider | Deployed at | Commit | Notes |
 |---|---|---|---|---|---|
-| production | https://test-project-kappa-virid.vercel.app | Vercel | 2026-04-06T16:43:36Z | 3d00fde | deployed by @tomas-kubis |
+| production | https://test-project-civilian-apps.vercel.app | Vercel | 2026-04-06T16:49:19Z | de4cbb4 | deployed by @tomas-kubis |
