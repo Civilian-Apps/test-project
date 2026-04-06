@@ -1,0 +1,56 @@
+name: Vercel Token Health Check
+
+on:
+  schedule:
+    - cron: '0 9 * * 1' # Every Monday at 9am UTC
+  workflow_dispatch: # Manual trigger
+
+jobs:
+  check-token:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate Vercel token
+        id: check
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}" \
+            https://api.vercel.com/v2/user)
+          if [ "$STATUS" != "200" ]; then
+            echo "valid=false" >> "$GITHUB_OUTPUT"
+            echo "::error::Vercel token is invalid or expired (HTTP $STATUS)"
+          else
+            echo "valid=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create issue if token expired
+        if: steps.check.outputs.valid == 'false'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: 'infra',
+              state: 'open',
+              per_page: 100,
+            });
+            const alreadyOpen = existing.data.some(i => i.title.includes('Vercel token expired'));
+            if (!alreadyOpen) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: '🔑 Vercel token expired — deployments are failing',
+                body: [
+                  'The `VERCEL_TOKEN` secret in this repo is invalid or expired.',
+                  '',
+                  '**Fix:**',
+                  '1. Go to https://vercel.com/account/tokens',
+                  '2. Create a new Personal Access Token (name: `github-actions-deploy`, scope: `civilian-apps`)',
+                  '3. Update the `VERCEL_TOKEN` secret in this repo and all other project repos',
+                  '4. Update `~/.config/civilian-apps/secrets.env` on the droplet',
+                  '',
+                  'All deployments are blocked until this is resolved.',
+                ].join('\n'),
+                labels: ['infra'],
+              });
+            }
