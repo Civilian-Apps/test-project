@@ -6,4 +6,4 @@
 
 | Environment | URL | Provider | Deployed at | Commit | Notes |
 |---|---|---|---|---|---|
-| production | https://test-project-kappa-virid.vercel.app | Vercel | 2026-04-06T00:00:00Z | unknown | Vercel assigned random suffix `kappa-virid` because the standard `<name>-civilian-apps` alias was already taken at the global Vercel namespace. Seeded by hand on 2026-04-06 — will be overwritten on next deploy. |
+| production | https://test-project-kappa-virid.vercel.app | Vercel | 2026-04-06T16:43:36Z | 3d00fde | deployed by @tomas-kubis |
